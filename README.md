@@ -41,10 +41,7 @@ ADMIN moze da radi CRUD. USER moze da vidi knjige, autore i kategorije.
 
 1. Instalirati JDK 17+, IntelliJ IDEA, MySQL Server/Workbench, Maven i Postman.
 2. U MySQL Workbench pokrenuti `database/create_database.sql`.
-3. U `src/main/resources/application.properties` promeniti:
-   `spring.datasource.password=CHANGE_ME`
-   na svoju MySQL root lozinku.
-4. Otvoriti projekat u IntelliJ IDEA kao Maven projekat.
-5. Pokrenuti `IsaLibraryApplication`.
-6. Otvoriti `http://localhost:8080`.
-7. Ulogovati se kao `admin / admin123`.
+3. Otvoriti projekat u IntelliJ IDEA kao Maven projekat.
+4. Pokrenuti `IsaLibraryApplication`.
+5. Otvoriti `http://localhost:8080`.
+6. Ulogovati se kao `admin / admin123`.
