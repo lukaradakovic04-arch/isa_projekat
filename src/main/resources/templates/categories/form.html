@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="sr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><title>Kategorija</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="~{fragments :: nav}"></div>
+<main class="container narrow">
+    <h1 th:text="${category.id == null ? 'Nova kategorija' : 'Izmena kategorije'}"></h1>
+    <form th:action="@{/categories/save}" th:object="${category}" method="post" class="panel form-grid">
+        <input type="hidden" th:field="*{id}">
+        <label>Naziv</label><input type="text" th:field="*{name}" required>
+        <div class="form-actions"><button type="submit">Sacuvaj</button><a class="button secondary" th:href="@{/categories}">Odustani</a></div>
+    </form>
+</main>
+</body>
+</html>

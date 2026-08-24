@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="sr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"><title>Kategorije</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="~{fragments :: nav}"></div>
+<main class="container">
+    <div th:replace="~{fragments :: messages}"></div>
+    <div class="page-header"><h1>Kategorije</h1><a class="button" th:href="@{/categories/new}" sec:authorize="hasRole('ADMIN')">Nova kategorija</a></div>
+    <table>
+        <thead><tr><th>ID</th><th>Naziv</th><th>Broj knjiga</th><th sec:authorize="hasRole('ADMIN')">Akcije</th></tr></thead>
+        <tbody>
+        <tr th:each="category : ${categories}">
+            <td th:text="${category.id}"></td><td th:text="${category.name}"></td><td th:text="${#lists.size(category.books)}"></td>
+            <td sec:authorize="hasRole('ADMIN')" class="actions">
+                <a class="button small secondary" th:href="@{/categories/edit/{id}(id=${category.id})}">Izmeni</a>
+                <form class="inline" th:action="@{/categories/delete/{id}(id=${category.id})}" method="post">
+                    <button class="danger small" type="submit">Obrisi</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>

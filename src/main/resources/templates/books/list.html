@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="sr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Knjige</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="~{fragments :: nav}"></div>
+<main class="container">
+    <div th:replace="~{fragments :: messages}"></div>
+    <div class="page-header">
+        <h1>Knjige</h1>
+        <a class="button" th:href="@{/books/new}" sec:authorize="hasRole('ADMIN')">Nova knjiga</a>
+    </div>
+    <table>
+        <thead>
+        <tr><th>ID</th><th>Naslov</th><th>ISBN</th><th>Godina</th><th>Kategorija</th><th>Autori</th><th sec:authorize="hasRole('ADMIN')">Akcije</th></tr>
+        </thead>
+        <tbody>
+        <tr th:each="book : ${books}">
+            <td th:text="${book.id}"></td>
+            <td th:text="${book.title}"></td>
+            <td th:text="${book.isbn}"></td>
+            <td th:text="${book.publicationYear}"></td>
+            <td th:text="${book.category != null ? book.category.name : '-'}"></td>
+            <td>
+                <span th:each="author, stat : ${book.authors}">
+                    <span th:text="${author.fullName}"></span><span th:if="${!stat.last}">, </span>
+                </span>
+            </td>
+            <td sec:authorize="hasRole('ADMIN')" class="actions">
+                <a class="button small secondary" th:href="@{/books/edit/{id}(id=${book.id})}">Izmeni</a>
+                <form class="inline" th:action="@{/books/delete/{id}(id=${book.id})}" method="post">
+                    <button class="danger small" type="submit" onclick="return confirm('Obrisati knjigu?')">Obrisi</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>

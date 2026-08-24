@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="sr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<nav th:fragment="nav" class="nav">
+    <a th:href="@{/}" class="brand">ISA Library</a>
+    <a th:href="@{/books}">Knjige</a>
+    <a th:href="@{/authors}">Autori</a>
+    <a th:href="@{/categories}">Kategorije</a>
+    <a th:href="@{/users}" sec:authorize="hasRole('ADMIN')">Korisnici</a>
+    <a th:href="@{/roles}" sec:authorize="hasRole('ADMIN')">Role</a>
+    <span class="spacer"></span>
+    <span class="user-info">Prijavljen: <b sec:authentication="name"></b></span>
+    <form th:action="@{/logout}" method="post" class="inline">
+        <button type="submit" class="secondary">Odjava</button>
+    </form>
+</nav>
+
+<div th:fragment="messages">
+    <div class="alert success" th:if="${message}" th:text="${message}"></div>
+    <div class="alert error" th:if="${error}" th:text="${error}"></div>
+</div>
+</body>
+</html>

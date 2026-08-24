@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="sr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>ISA Library</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="~{fragments :: nav}"></div>
+<main class="container">
+    <h1>Kontrolna tabla</h1>
+    <p>Jednostavna aplikacija za upravljanje bibliotekom.</p>
+
+    <div class="cards">
+        <a class="card" th:href="@{/books}">
+            <span class="count" th:text="${bookCount}">0</span>
+            <span>Knjige</span>
+        </a>
+        <a class="card" th:href="@{/authors}">
+            <span class="count" th:text="${authorCount}">0</span>
+            <span>Autori</span>
+        </a>
+        <a class="card" th:href="@{/categories}">
+            <span class="count" th:text="${categoryCount}">0</span>
+            <span>Kategorije</span>
+        </a>
+        <a class="card" th:href="@{/users}" sec:authorize="hasRole('ADMIN')">
+            <span class="count" th:text="${userCount}">0</span>
+            <span>Korisnici</span>
+        </a>
+        <a class="card" th:href="@{/roles}" sec:authorize="hasRole('ADMIN')">
+            <span class="count" th:text="${roleCount}">0</span>
+            <span>Role</span>
+        </a>
+    </div>
+
+    <section class="panel">
+        <h2>Sta projekat demonstrira</h2>
+        <ul>
+            <li>Spring MVC arhitekturu: Controller - Service - Repository - Entity.</li>
+            <li>CRUD nad 5 glavnih tabela.</li>
+            <li>OneToMany relaciju: Category - Book.</li>
+            <li>ManyToMany relacije: Book - Author i User - Role.</li>
+            <li>Autentifikaciju i autorizaciju preko uloga.</li>
+            <li>Upravljanje HTTP sesijom preko Spring Security.</li>
+            <li>REST API za knjige koji moze da se dokumentuje u Postman-u.</li>
+        </ul>
+    </section>
+</main>
+</body>
+</html>

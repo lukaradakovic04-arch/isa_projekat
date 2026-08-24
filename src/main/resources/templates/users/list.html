@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="sr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><title>Korisnici</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="~{fragments :: nav}"></div>
+<main class="container">
+    <div th:replace="~{fragments :: messages}"></div>
+    <div class="page-header"><h1>Korisnici</h1><a class="button" th:href="@{/users/new}">Novi korisnik</a></div>
+    <table>
+        <thead><tr><th>ID</th><th>Username</th><th>Aktivan</th><th>Role</th><th>Akcije</th></tr></thead>
+        <tbody>
+        <tr th:each="user : ${users}">
+            <td th:text="${user.id}"></td>
+            <td th:text="${user.username}"></td>
+            <td th:text="${user.enabled ? 'DA' : 'NE'}"></td>
+            <td>
+                <span th:each="role, stat : ${user.roles}">
+                    <span th:text="${role.name}"></span><span th:if="${!stat.last}">, </span>
+                </span>
+            </td>
+            <td class="actions">
+                <a class="button small secondary" th:href="@{/users/edit/{id}(id=${user.id})}">Izmeni</a>
+                <form class="inline" th:action="@{/users/delete/{id}(id=${user.id})}" method="post">
+                    <button class="danger small" type="submit" onclick="return confirm('Obrisati korisnika?')">Obrisi</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>

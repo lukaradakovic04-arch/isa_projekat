@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="sr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Knjiga</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="~{fragments :: nav}"></div>
+<main class="container narrow">
+    <h1 th:text="${bookForm.id == null ? 'Nova knjiga' : 'Izmena knjige'}"></h1>
+    <div class="alert error" th:if="${error}" th:text="${error}"></div>
+
+    <form th:action="@{/books/save}" th:object="${bookForm}" method="post" class="panel form-grid">
+        <input type="hidden" th:field="*{id}">
+
+        <label>Naslov</label>
+        <input type="text" th:field="*{title}">
+        <small class="field-error" th:errors="*{title}"></small>
+
+        <label>ISBN</label>
+        <input type="text" th:field="*{isbn}">
+        <small class="field-error" th:errors="*{isbn}"></small>
+
+        <label>Godina izdanja</label>
+        <input type="number" th:field="*{publicationYear}" min="1000" max="2100">
+        <small class="field-error" th:errors="*{publicationYear}"></small>
+
+        <label>Kategorija</label>
+        <select th:field="*{categoryId}">
+            <option value="">-- izaberi --</option>
+            <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+        </select>
+        <small class="field-error" th:errors="*{categoryId}"></small>
+
+        <label>Autori</label>
+        <div class="check-list">
+            <label th:each="author : ${authors}" class="check-row">
+                <input type="checkbox" name="authorIds" th:value="${author.id}"
+                       th:checked="${bookForm.authorIds != null and #lists.contains(bookForm.authorIds, author.id)}">
+                <span th:text="${author.fullName}"></span>
+            </label>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit">Sacuvaj</button>
+            <a class="button secondary" th:href="@{/books}">Odustani</a>
+        </div>
+    </form>
+</main>
+</body>
+</html>

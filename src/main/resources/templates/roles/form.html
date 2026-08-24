@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="sr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><title>Rola</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="~{fragments :: nav}"></div>
+<main class="container narrow">
+    <h1 th:text="${role.id == null ? 'Nova rola' : 'Izmena role'}"></h1>
+    <form th:action="@{/roles/save}" th:object="${role}" method="post" class="panel form-grid">
+        <input type="hidden" th:field="*{id}">
+        <label>Naziv role</label><input type="text" th:field="*{name}" placeholder="ROLE_MANAGER" required>
+        <div class="form-actions"><button type="submit">Sacuvaj</button><a class="button secondary" th:href="@{/roles}">Odustani</a></div>
+    </form>
+</main>
+</body>
+</html>

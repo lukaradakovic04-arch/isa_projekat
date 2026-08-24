@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="sr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><title>Autor</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="~{fragments :: nav}"></div>
+<main class="container narrow">
+    <h1 th:text="${author.id == null ? 'Novi autor' : 'Izmena autora'}"></h1>
+    <form th:action="@{/authors/save}" th:object="${author}" method="post" class="panel form-grid">
+        <input type="hidden" th:field="*{id}">
+        <label>Ime</label><input type="text" th:field="*{firstName}" required>
+        <label>Prezime</label><input type="text" th:field="*{lastName}" required>
+        <div class="form-actions"><button type="submit">Sacuvaj</button><a class="button secondary" th:href="@{/authors}">Odustani</a></div>
+    </form>
+</main>
+</body>
+</html>

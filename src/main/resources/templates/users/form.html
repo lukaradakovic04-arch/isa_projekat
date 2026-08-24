@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="sr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><title>Korisnik</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="~{fragments :: nav}"></div>
+<main class="container narrow">
+    <h1 th:text="${userForm.id == null ? 'Novi korisnik' : 'Izmena korisnika'}"></h1>
+    <div class="alert error" th:if="${error}" th:text="${error}"></div>
+
+    <form th:action="@{/users/save}" th:object="${userForm}" method="post" class="panel form-grid">
+        <input type="hidden" th:field="*{id}">
+
+        <label>Korisnicko ime</label>
+        <input type="text" th:field="*{username}" required>
+        <small class="field-error" th:errors="*{username}"></small>
+
+        <label>Lozinka</label>
+        <input type="password" th:field="*{password}" th:placeholder="${userForm.id == null ? 'obavezna' : 'ostavi prazno da ostane ista'}">
+
+        <label>Aktivan</label>
+        <label class="check-row"><input type="checkbox" th:field="*{enabled}"> Da</label>
+
+        <label>Role</label>
+        <div class="check-list">
+            <label th:each="role : ${roles}" class="check-row">
+                <input type="checkbox" name="roleIds" th:value="${role.id}"
+                       th:checked="${userForm.roleIds != null and #lists.contains(userForm.roleIds, role.id)}">
+                <span th:text="${role.name}"></span>
+            </label>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit">Sacuvaj</button>
+            <a class="button secondary" th:href="@{/users}">Odustani</a>
+        </div>
+    </form>
+</main>
+</body>
+</html>

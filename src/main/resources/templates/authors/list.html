@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="sr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"><title>Autori</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="~{fragments :: nav}"></div>
+<main class="container">
+    <div th:replace="~{fragments :: messages}"></div>
+    <div class="page-header"><h1>Autori</h1><a class="button" th:href="@{/authors/new}" sec:authorize="hasRole('ADMIN')">Novi autor</a></div>
+    <table>
+        <thead><tr><th>ID</th><th>Ime</th><th>Prezime</th><th sec:authorize="hasRole('ADMIN')">Akcije</th></tr></thead>
+        <tbody>
+        <tr th:each="author : ${authors}">
+            <td th:text="${author.id}"></td><td th:text="${author.firstName}"></td><td th:text="${author.lastName}"></td>
+            <td sec:authorize="hasRole('ADMIN')" class="actions">
+                <a class="button small secondary" th:href="@{/authors/edit/{id}(id=${author.id})}">Izmeni</a>
+                <form class="inline" th:action="@{/authors/delete/{id}(id=${author.id})}" method="post">
+                    <button class="danger small" type="submit">Obrisi</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>

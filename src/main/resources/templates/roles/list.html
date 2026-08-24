@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="sr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><title>Role</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="~{fragments :: nav}"></div>
+<main class="container">
+    <div th:replace="~{fragments :: messages}"></div>
+    <div class="page-header"><h1>Role</h1><a class="button" th:href="@{/roles/new}">Nova rola</a></div>
+    <table>
+        <thead><tr><th>ID</th><th>Naziv</th><th>Broj korisnika</th><th>Akcije</th></tr></thead>
+        <tbody>
+        <tr th:each="role : ${roles}">
+            <td th:text="${role.id}"></td><td th:text="${role.name}"></td><td th:text="${#sets.size(role.users)}"></td>
+            <td class="actions">
+                <a class="button small secondary" th:href="@{/roles/edit/{id}(id=${role.id})}">Izmeni</a>
+                <form class="inline" th:action="@{/roles/delete/{id}(id=${role.id})}" method="post">
+                    <button class="danger small" type="submit">Obrisi</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>
