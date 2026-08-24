@@ -54,8 +54,8 @@ CRUD je implementiran za svih pet glavnih entiteta:
 - Users
 - Roles
 
-Korisnik sa rolom ADMIN moze da kreira, menja i brise podatke.
-Obican USER ima samo pregled knjiga, autora i kategorija.
+Korisnik sa rolom ADMIN moze da kreira, menja i briše podatke.
+Običan USER ima samo pregled knjiga, autora i kategorija.
 
 ## 5. Autentifikacija i autorizacija
 
@@ -74,14 +74,14 @@ Demo korisnici:
 
 ## 6. Upravljanje sesijama
 
-Ne koristi se JWT zato sto je izabrana MVC varijanta.
+Ne koristi se JWT zato što je izabrana MVC varijanta.
 
 Spring Security koristi HTTP sesiju (`JSESSIONID`).
 
-Podeseno je:
+Podešeno je:
 
 - timeout sesije 30 minuta
-- najvise 1 aktivna sesija po korisniku
+- najviše 1 aktivna sesija po korisniku
 - invalidacija sesije pri logout-u
 - brisanje `JSESSIONID` cookie-ja pri logout-u
 - preusmeravanje na login ako je sesija istekla
@@ -96,8 +96,8 @@ Dodat je mali API za knjige:
 - `PUT /api/books/{id}`
 - `DELETE /api/books/{id}`
 
-API je dostupan ADMIN korisniku. U Postman-u se prvo radi login preko `/login`, nakon cega
-Postman cuva session cookie.
+API je dostupan ADMIN korisniku. U Postman-u se prvo radi login preko `/login`, nakon čega
+Postman čuva session cookie.
 
 Primer JSON tela:
 
@@ -111,7 +111,7 @@ Primer JSON tela:
 }
 ```
 
-## 8. Najvaznije klase
+## 8. Najvažnije klase
 
 - `SecurityConfig`
 - `DataInitializer`
@@ -127,7 +127,7 @@ Primer JSON tela:
 ## 9. Kratak opis tehnologija
 
 ### Spring MVC
-Obradjuje HTTP zahteve kroz kontrolere i mapiranja kao `@GetMapping` i `@PostMapping`.
+Obrađuje HTTP zahteve kroz kontrolere i mapiranja kao `@GetMapping` i `@PostMapping`.
 
 ### Spring Data JPA
 Smanjuje boilerplate za pristup bazi kroz `JpaRepository`.
@@ -136,13 +136,13 @@ Smanjuje boilerplate za pristup bazi kroz `JpaRepository`.
 ORM implementacija koja mapira Java entitete na MySQL tabele.
 
 ### Spring Security
-Obezbedjuje login, role, autorizaciju, BCrypt i upravljanje sesijom.
+Obezbeđuje login, role, autorizaciju, BCrypt i upravljanje sesijom.
 
 ### Thymeleaf
 Server-side template engine za generisanje HTML-a.
 
 ### MySQL
-Relaciona baza u kojoj se cuvaju podaci aplikacije.
+Relaciona baza u kojoj se čuvaju podaci aplikacije.
 
 ### Postman
 Koristi se za testiranje i dokumentovanje API zahteva.
