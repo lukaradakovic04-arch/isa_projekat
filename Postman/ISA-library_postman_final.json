@@ -1,0 +1,362 @@
+{
+  "info": {
+    "_postman_id": "2df32f3d-5a5a-4ec2-8e3e-isa-library-final",
+    "name": "ISA Library - FINAL",
+    "description": "Postman kolekcija za ISA Library Spring MVC projekat. Koristi HTTP sesiju (JSESSIONID). Prvo pokrenuti 00 - Get CSRF token, zatim 01 - Login as admin, pa CRUD zahteve. Kolekcija sadrži primere odgovora za javnu dokumentaciju.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "bookId",
+      "value": "1"
+    },
+    {
+      "key": "csrfToken",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "00 - Get CSRF token",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Login page loaded', function () {",
+              "    pm.expect(pm.response.code).to.eql(200);",
+              "});",
+              "",
+              "const html = pm.response.text();",
+              "const match = html.match(/name=[\"']_csrf[\"'][^>]*value=[\"']([^\"']+)[\"']/i);",
+              "pm.test('CSRF token found', function () {",
+              "    pm.expect(match).to.not.eql(null);",
+              "});",
+              "if (match) {",
+              "    pm.collectionVariables.set('csrfToken', match[1]);",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/login",
+        "description": "Učitava login stranicu i automatski iz HTML-a čuva Spring Security CSRF token u collection variable `csrfToken`. Postman takođe čuva session cookie."
+      }
+    },
+    {
+      "name": "01 - Login as admin",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Login successful', function () {",
+              "    pm.expect([200, 302]).to.include(pm.response.code);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "username",
+              "value": "admin",
+              "type": "text"
+            },
+            {
+              "key": "password",
+              "value": "admin123",
+              "type": "text"
+            },
+            {
+              "key": "_csrf",
+              "value": "{{csrfToken}}",
+              "type": "text"
+            }
+          ]
+        },
+        "url": "{{baseUrl}}/login",
+        "description": "Prijava administratorskog korisnika. Spring Security koristi JSESSIONID sesiju, koju Postman automatski čuva i šalje u sledećim zahtevima."
+      }
+    },
+    {
+      "name": "02 - Get all books",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test('Response is an array', function () {",
+              "    pm.expect(pm.response.json()).to.be.an('array');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/books",
+        "description": "READ operacija: vraća sve knjige. Zahteva ADMIN sesiju."
+      },
+      "response": [
+        {
+          "name": "Example - all books",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/books"
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "[\n  {\n    \"id\": 1,\n    \"title\": \"1984\",\n    \"isbn\": \"9780451524935\",\n    \"publicationYear\": 1949,\n    \"categoryId\": 1,\n    \"categoryName\": \"Roman\",\n    \"authorIds\": [\n      1\n    ],\n    \"authors\": [\n      \"George Orwell\"\n    ]\n  },\n  {\n    \"id\": 2,\n    \"title\": \"Effective Java\",\n    \"isbn\": \"9780134685991\",\n    \"publicationYear\": 2018,\n    \"categoryId\": 2,\n    \"categoryName\": \"Programiranje\",\n    \"authorIds\": [\n      2\n    ],\n    \"authors\": [\n      \"Joshua Bloch\"\n    ]\n  }\n]"
+        }
+      ]
+    },
+    {
+      "name": "03 - Create book",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status 201', function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "if (pm.response.code === 201) {",
+              "    const json = pm.response.json();",
+              "    pm.collectionVariables.set('bookId', json.id);",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Clean Code\",\n  \"isbn\": \"9780132350884\",\n  \"publicationYear\": 2008,\n  \"categoryId\": 2,\n  \"authorIds\": [\n    2\n  ]\n}"
+        },
+        "url": "{{baseUrl}}/api/books",
+        "description": "CREATE operacija. Kreira novu knjigu i automatski čuva njen `id` u collection variable `bookId`."
+      },
+      "response": [
+        {
+          "name": "Example - created book",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Clean Code\",\n  \"isbn\": \"9780132350884\",\n  \"publicationYear\": 2008,\n  \"categoryId\": 2,\n  \"authorIds\": [\n    2\n  ]\n}"
+            },
+            "url": "{{baseUrl}}/api/books"
+          },
+          "status": "Created",
+          "code": 201,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"id\": 3,\n  \"title\": \"Clean Code\",\n  \"isbn\": \"9780132350884\",\n  \"publicationYear\": 2008,\n  \"categoryId\": 2,\n  \"categoryName\": \"Programiranje\",\n  \"authorIds\": [\n    2\n  ],\n  \"authors\": [\n    \"Joshua Bloch\"\n  ]\n}"
+        }
+      ]
+    },
+    {
+      "name": "04 - Get created book",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test('Correct book returned', function () {",
+              "    pm.expect(pm.response.json().id).to.eql(Number(pm.collectionVariables.get('bookId')));",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/books/{{bookId}}",
+        "description": "READ operacija: vraća jednu knjigu po ID-u."
+      },
+      "response": [
+        {
+          "name": "Example - one book",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/books/{{bookId}}"
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"id\": 3,\n  \"title\": \"Clean Code\",\n  \"isbn\": \"9780132350884\",\n  \"publicationYear\": 2008,\n  \"categoryId\": 2,\n  \"categoryName\": \"Programiranje\",\n  \"authorIds\": [\n    2\n  ],\n  \"authors\": [\n    \"Joshua Bloch\"\n  ]\n}"
+        }
+      ]
+    },
+    {
+      "name": "05 - Update created book",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test('Title was updated', function () {",
+              "    pm.expect(pm.response.json().title).to.eql('Clean Code - updated');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Clean Code - updated\",\n  \"isbn\": \"9780132350884\",\n  \"publicationYear\": 2008,\n  \"categoryId\": 2,\n  \"authorIds\": [\n    2\n  ]\n}"
+        },
+        "url": "{{baseUrl}}/api/books/{{bookId}}",
+        "description": "UPDATE operacija: menja prethodno kreiranu knjigu."
+      },
+      "response": [
+        {
+          "name": "Example - updated book",
+          "originalRequest": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Clean Code - updated\",\n  \"isbn\": \"9780132350884\",\n  \"publicationYear\": 2008,\n  \"categoryId\": 2,\n  \"authorIds\": [\n    2\n  ]\n}"
+            },
+            "url": "{{baseUrl}}/api/books/{{bookId}}"
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"id\": 3,\n  \"title\": \"Clean Code - updated\",\n  \"isbn\": \"9780132350884\",\n  \"publicationYear\": 2008,\n  \"categoryId\": 2,\n  \"categoryName\": \"Programiranje\",\n  \"authorIds\": [\n    2\n  ],\n  \"authors\": [\n    \"Joshua Bloch\"\n  ]\n}"
+        }
+      ]
+    },
+    {
+      "name": "06 - Delete created book",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test('Delete message returned', function () {",
+              "    pm.expect(pm.response.json().message).to.eql('Knjiga je obrisana.');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": "{{baseUrl}}/api/books/{{bookId}}",
+        "description": "DELETE operacija: briše prethodno kreiranu knjigu."
+      },
+      "response": [
+        {
+          "name": "Example - deleted book",
+          "originalRequest": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/api/books/{{bookId}}"
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"message\": \"Knjiga je obrisana.\"\n}"
+        }
+      ]
+    }
+  ]
+}
