@@ -3,6 +3,3 @@ CREATE DATABASE IF NOT EXISTS isa_library
     COLLATE utf8mb4_unicode_ci;
 
 USE isa_library;
-
--- Tabele automatski kreira Hibernate zato sto je u application.properties:
--- spring.jpa.hibernate.ddl-auto=update
